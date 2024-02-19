@@ -5,4 +5,6 @@
     <string name="title_dashboard">Cart</string>
     <string name="title_notifications">Notifications</string>
     <string name="text_0">0</string>
+    <string name="total_qty">Total : %s</string>
+    <string name="cart_empty">Keranjang masih kosong</string>
 </resources>

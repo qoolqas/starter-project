@@ -2,7 +2,6 @@ package com.example.starterproject.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.starterproject.data.Repository
 import com.example.starterproject.ui_model.ProductUiModel
 import com.example.starterproject.usecase.ProductUseCase
 import com.example.starterproject.utils.interactor.ResultState
@@ -33,6 +32,8 @@ class MainViewModel @Inject constructor(
     private val productUiModelsState = _productResult
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    var localData: List<ProductUiModel>? = null
+
     fun getProducts(){
         viewModelScope.launch {
             _loading.emit(true)
@@ -48,10 +49,11 @@ class MainViewModel @Inject constructor(
                     _loading.emit(false)
                     _productResult.emit(it)
                 }
+
         }
     }
-    fun minusCart(product: ProductUiModel) {
 
+    fun minusCart(product: ProductUiModel) {
         val currentProductUiModels = productUiModelsState.value?.getDataOrNull() ?: emptyList()
         val updatedProductUiModels = currentProductUiModels.map {
             if (it.id == product.id) {
@@ -63,6 +65,7 @@ class MainViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _productResult.emit(ResultState.Success(updatedProductUiModels))
+            localData = updatedProductUiModels
         }
     }
     fun plusCart(product: ProductUiModel) {
@@ -76,6 +79,7 @@ class MainViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _productResult.emit(ResultState.Success(updatedProductUiModels))
+            localData = updatedProductUiModels
         }
     }
 }

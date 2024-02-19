@@ -1,4 +1,4 @@
-package com.example.starterproject.presentation
+package com.example.starterproject.presentation.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
