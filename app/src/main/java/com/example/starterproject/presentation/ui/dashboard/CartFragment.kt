@@ -52,7 +52,7 @@ class CartFragment : Fragment() {
     }
     private fun setupObserver() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 launch {
                     viewModel.productResult.collectLatest {
                         it.onSuccess { result ->
@@ -69,7 +69,6 @@ class CartFragment : Fragment() {
             }
         }
     }
-
     private fun setupViews() {
         binding.rvProducts.adapter = adapterCourse
     }

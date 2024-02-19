@@ -26,6 +26,8 @@ class HomeFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
+    private var hasLoadedData = false
+
     private val adapterCourse: ProductAdapter by lazy {
         ProductAdapter(
             onMinusClick = {
@@ -47,7 +49,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getProducts()
+        if (!hasLoadedData) {
+            viewModel.getProducts()
+            hasLoadedData = true
+        }
         setupObserver()
         setupViews()
     }
