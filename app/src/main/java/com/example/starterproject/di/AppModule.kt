@@ -1,6 +1,8 @@
 package com.example.starterproject.di
 
 import com.example.starterproject.data.ApiService
+import com.example.starterproject.data.Repository
+import com.example.starterproject.data.RepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,11 +12,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
     @Provides
+    @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
 
@@ -35,5 +40,11 @@ class AppModule {
             .client(client)
             .build()
             .create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesRepository(apiService: ApiService): Repository {
+        return RepositoryImpl(apiService)
+    }
 }
 

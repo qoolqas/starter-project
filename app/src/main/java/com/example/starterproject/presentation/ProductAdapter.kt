@@ -5,14 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.starterproject.data.ProductResponse
+import coil.load
 import com.example.starterproject.databinding.ItemProductBinding
+import com.example.starterproject.ui_model.ProductUiModel
+import com.example.starterproject.utils.toIdrCurrency
 
-class ProductAdapter : ListAdapter<ProductResponse, ProductAdapter.ProductViewHolder>(DIFF_CALLBACK) {
+class ProductAdapter(
+    private val onMinusClick: (ProductUiModel) -> Unit,
+    private val onPlusClick: (ProductUiModel) -> Unit
+) : ListAdapter<ProductUiModel, ProductAdapter.ProductViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProductViewHolder(binding)
+        return ProductViewHolder(binding,onMinusClick,onPlusClick)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
@@ -20,26 +25,42 @@ class ProductAdapter : ListAdapter<ProductResponse, ProductAdapter.ProductViewHo
         holder.bind(item)
     }
 
-    inner class ProductViewHolder(private val binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: ProductResponse) {
+    inner class ProductViewHolder(
+        private val binding: ItemProductBinding,
+        private val onMinusClick: (ProductUiModel) -> Unit,
+        private val onPlusClick: (ProductUiModel) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(data: ProductUiModel) {
             binding.apply {
-                tvProductName.text = data.name
+                tvTitle.text = data.name
+                tvDesc.text = data.sortDescription
+                tvPrice.text = data.price.toIdrCurrency()
+                ivImg.load(
+                    data.images
+                )
+                clMinusQty.setOnClickListener {
+                    onMinusClick.invoke(data)
+                }
+                clPlusQty.setOnClickListener {
+                    onPlusClick.invoke(data)
+                }
+                tvTotalQty.text = data.totalCart.toString()
             }
         }
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProductResponse>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProductUiModel>() {
             override fun areItemsTheSame(
-                oldItem: ProductResponse,
-                newItem: ProductResponse
+                oldItem: ProductUiModel,
+                newItem: ProductUiModel
             ): Boolean {
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: ProductResponse,
-                newItem: ProductResponse
+                oldItem: ProductUiModel,
+                newItem: ProductUiModel
             ): Boolean {
                 return oldItem == newItem
             }

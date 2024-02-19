@@ -1,5 +1,6 @@
 package com.example.starterproject.data
 
+import com.example.starterproject.domain.ProductDomain
 import com.google.gson.annotations.SerializedName
 
 data class ProductResponse(
@@ -17,4 +18,16 @@ data class ProductResponse(
     val rating: Double?,
     @SerializedName("sort_description")
     val sortDescription: String?
-)
+){
+    fun toDomain(): ProductDomain{
+        return ProductDomain(
+            discount = discount ?: 0,
+            id = id ?: 0,
+            images = images.orEmpty(),
+            name = name.orEmpty(),
+            price = price ?: 0.0,
+            rating = rating ?: 0.0,
+            sortDescription = sortDescription.orEmpty(),
+        )
+    }
+}
