@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
 
     private var hasLoadedData = false
 
-    private val adapterCourse: ProductAdapter by lazy {
+    private val productAdapter: ProductAdapter by lazy {
         ProductAdapter(
             onMinusClick = {
                 viewModel.minusCart(it)
@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
                 launch {
                     viewModel.productResult.collectLatest {
                         it.onSuccess { result ->
-                            adapterCourse.submitList(result)
+                            productAdapter.submitList(result)
                         }
                     }
                 }
@@ -73,8 +73,14 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.localData != null) productAdapter.submitList(viewModel.localData)
+
+    }
+
     private fun setupViews() {
-        binding.rvProducts.adapter = adapterCourse
+        binding.rvProducts.adapter = productAdapter
     }
 
     override fun onDestroyView() {
